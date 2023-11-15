@@ -29,26 +29,18 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: intention
+            name: user_type
             from: inputs/rsIdentifies
-            select: array_agg(distinct intention)
-            description: What is the user looking to do on OpenDoor?
+            select: first_value(user_type)
+            description: Is the user someone looking for talent or looking to be hired?
         - entity_var:
-            name: sell_urgency
+            name: job_types
             from: inputs/rsIdentifies
-            select: first_value(sell_urgency ignore nulls)
+            select: array_agg(distinct job_types)
             window:
               order_by:
                 - timestamp desc
             description: When is the user looking to sell their home?
-        - entity_var:
-            name: buy_urgency
-            from: inputs/rsIdentifies
-            select: first_value(buy_urgency ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: When is the user looking to buy a home?
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -282,9 +274,8 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - intention
-        - sell_urgency
-        - buy_urgency
+        - user_type
+        - job_types
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
