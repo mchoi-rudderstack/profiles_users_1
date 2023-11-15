@@ -32,15 +32,15 @@ models:
             name: user_type
             from: inputs/rsIdentifies
             select: first_value(user_type)
+            window:
+              order_by:
+                - timestamp desc
             description: Is the user someone looking for talent or looking to be hired?
         - entity_var:
             name: job_types
             from: inputs/rsIdentifies
             select: array_agg(distinct job_types)
-            window:
-              order_by:
-                - timestamp desc
-            description: When is the user looking to sell their home?
+            description: What is the user hiring or auditioning for?
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
