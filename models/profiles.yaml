@@ -55,7 +55,7 @@ models:
         - entity_var:
             name: completed_fundraising_plan
             from: inputs/rsIdentifies
-            select: first_value(completed_fundraising_plan)
+            select: first_value(completed_fundraising_plan ignore nulls)
             window:
               order_by:
                 - timestamp desc
