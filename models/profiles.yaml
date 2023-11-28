@@ -29,37 +29,13 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: user_type
+            name: season_ticket_holder
             from: inputs/rsIdentifies
-            select: first_value(user_type)
+            select: first_value(season_ticket_holder ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Is the user someone looking to invest to raise capital?
-        - entity_var:
-            name: companies_viewed
-            from: inputs/rsIdentifies
-            select: first_value(companies_viewed ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of companies that the user viewed
-        - entity_var:
-            name: companies_invested
-            from: inputs/rsIdentifies
-            select: first_value(companies_invested ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of companies that the user invested in
-        - entity_var:
-            name: completed_fundraising_plan
-            from: inputs/rsIdentifies
-            select: first_value(completed_fundraising_plan ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Has the user completed their fundraising plan?
+            description: Is the user a season ticket holder?
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -293,10 +269,7 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - user_type
-        - companies_invested
-        - companies_viewed
-        - completed_fundraising_plan
+        - season_ticket_holder
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
