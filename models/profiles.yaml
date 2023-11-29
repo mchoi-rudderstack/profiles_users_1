@@ -31,7 +31,7 @@ models:
         - entity_var:
             name: season_ticket_holder
             from: inputs/rsIdentifies
-            select: first_value(season_ticket_holder)
+            select: first_value(season_ticket_holder ignore nulls)
             window:
               order_by:
                 - timestamp desc
