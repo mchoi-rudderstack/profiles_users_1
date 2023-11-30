@@ -29,37 +29,23 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: season_ticket_holder
+            name: product_used
             from: inputs/rsIdentifies
-            select: first_value(season_ticket_holder ignore nulls)
+            select: array_agg( distinct product_used)
             window:
               order_by:
                 - timestamp desc
-            description: Is the user a season ticket holder?
+            description: Which products have the user used
         - entity_var:
-            name: pacers_games_attended
+            name: amount_invested
             from: inputs/rsIdentifies
-            select: first_value(pacers_games ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Total number of Pacers games attended by the user
+            select: sum(amount_invested::real)
+            description: Total amount invested through Swan Bitcoin
         - entity_var:
-            name: fever_games_attended
+            name: remaining_balance
             from: inputs/rsIdentifies
-            select: first_value(fever_games ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Total number of Fever games attended by the user
-        - entity_var:
-            name: madants_games_attended
-            from: inputs/rsIdentifies
-            select: first_value(madants_games ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Total number of Mad Ants games attended by the user
+            select: sum(remaining_balance::real)
+            description: Total available balance to invest through Swan Bitcoin
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -293,10 +279,9 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - season_ticket_holder
-        - pacers_games_attended
-        - fever_games_attended
-        - madants_games_attended
+        - product_used
+        - remaining_balance
+        - remaining_balance
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
