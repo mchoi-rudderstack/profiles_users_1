@@ -32,9 +32,6 @@ models:
             name: product_used
             from: inputs/rsIdentifies
             select: array_agg( distinct product_used)
-            window:
-              order_by:
-                - timestamp desc
             description: Which products have the user used
         - entity_var:
             name: amount_invested
