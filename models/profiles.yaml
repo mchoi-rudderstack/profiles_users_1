@@ -280,7 +280,7 @@ models:
             description: The list of unique products bought by the user.
       features:
         - product_used
-        - remaining_balance
+        - amount_invested
         - remaining_balance
         - total_sessions_to_date
         - days_since_account_creation
