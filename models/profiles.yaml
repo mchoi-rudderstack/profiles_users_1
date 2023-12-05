@@ -37,25 +37,25 @@ models:
                 - timestamp desc
             description: Season ticket holder status of the user
         - entity_var:
-            name: cavs_game_attended
+            name: cavs_games_attended
             from: inputs/rsIdentifies
-            select: first_value(cavs_game_attended)
+            select: first_value(cavs_games_attended)
             window:
               order_by:
                 - timestamp desc
             description: Number of Cavs games attended
         - entity_var:
-            name: monsters_game_attended
+            name: monsters_games_attended
             from: inputs/rsIdentifies
-            select: first_value(monsters_game_attended)
+            select: first_value(monsters_games_attended)
             window:
               order_by:
                 - timestamp desc
             description: Number of Monsters games attended
         - entity_var:
-            name: charge_game_attended
+            name: charge_games_attended
             from: inputs/rsIdentifies
-            select: first_value(charge_game_attended)
+            select: first_value(charge_games_attended)
             window:
               order_by:
                 - timestamp desc
@@ -294,9 +294,9 @@ models:
             description: The list of unique products bought by the user.
       features:
         - season_ticket_holder
-        - cavs_game_attended
-        - monsters_game_attended
-        - charge_game_attended
+        - cavs_games_attended
+        - monsters_games_attended
+        - charge_games_attended
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
