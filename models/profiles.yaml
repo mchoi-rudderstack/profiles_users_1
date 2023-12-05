@@ -29,20 +29,37 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: product_used
+            name: season_ticket_holder
             from: inputs/rsIdentifies
-            select: array_agg( distinct product_used)
-            description: Which products have the user used
+            select: first_value(season_ticket_holder)
+            window:
+              order_by:
+                - timestamp desc
+            description: Season ticket holder status of the user
         - entity_var:
-            name: amount_invested
+            name: cavs_game_attended
             from: inputs/rsIdentifies
-            select: sum(amount_invested::real)
-            description: Total amount invested through Swan Bitcoin
+            select: first_value(cavs_game_attended)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of Cavs games attended
         - entity_var:
-            name: remaining_balance
+            name: monsters_game_attended
             from: inputs/rsIdentifies
-            select: sum(remaining_balance::real)
-            description: Total available balance to invest through Swan Bitcoin
+            select: first_value(monsters_game_attended)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of Monsters games attended
+        - entity_var:
+            name: charge_game_attended
+            from: inputs/rsIdentifies
+            select: first_value(charge_game_attended)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of Chaerge games attended
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -276,9 +293,10 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - product_used
-        - amount_invested
-        - remaining_balance
+        - season_ticket_holder
+        - cavs_game_attended
+        - monsters_game_attended
+        - charge_game_attended
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
