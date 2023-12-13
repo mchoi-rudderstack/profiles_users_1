@@ -29,37 +29,31 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: season_ticket_holder
+            name: product_used
             from: inputs/rsIdentifies
-            select: first_value(season_ticket_holder ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Season ticket holder status of the user
+            select: array_agg(distinct product_used)
+            description: Product
         - entity_var:
-            name: cavs_games_attended
+            name: open_support_tickets
             from: inputs/rsIdentifies
-            select: first_value(cavs_games_attended)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of Cavs games attended
+            select: sum(open_support_tickets::real)
+            description: Total support tickets currently open
         - entity_var:
-            name: monsters_games_attended
+            name: data_used_mobile
             from: inputs/rsIdentifies
-            select: first_value(monsters_games_attended)
+            select: first_value(data_used_wireless ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Number of Monsters games attended
+            description: Total number of GBs used on Boost Mobile
         - entity_var:
-            name: charge_games_attended
+            name: data_used_infinite
             from: inputs/rsIdentifies
-            select: first_value(charge_games_attended)
+            select: first_value(data_used_infinite ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Number of Chaerge games attended
+            description: Total number of GBs used on Boost Infinite
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -294,9 +288,9 @@ models:
             description: The list of unique products bought by the user.
       features:
         - season_ticket_holder
-        - cavs_games_attended
-        - monsters_games_attended
-        - charge_games_attended
+        - data_used_mobile
+        - data_used_infinite
+        - open_support_tickets
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
