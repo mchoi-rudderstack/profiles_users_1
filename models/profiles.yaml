@@ -32,7 +32,7 @@ models:
             name: product_used
             from: inputs/rsIdentifies
             select: array_agg(distinct product_used)
-            description: Product
+            description: Product used by the user
         - entity_var:
             name: open_support_tickets
             from: inputs/rsIdentifies
@@ -287,6 +287,7 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
+        - product_used
         - data_used_mobile
         - data_used_infinite
         - open_support_tickets
