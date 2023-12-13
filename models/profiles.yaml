@@ -287,7 +287,6 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - season_ticket_holder
         - data_used_mobile
         - data_used_infinite
         - open_support_tickets
