@@ -41,7 +41,7 @@ models:
         - entity_var:
             name: data_used_mobile
             from: inputs/rsIdentifies
-            select: first_value(data_used_wireless ignore nulls)
+            select: first_value(data_used_mobile ignore nulls)
             window:
               order_by:
                 - timestamp desc
