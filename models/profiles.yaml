@@ -32,34 +32,70 @@ models:
             name: product_used
             from: inputs/rsIdentifies
             select: array_agg(distinct product_used)
-            description: Product used by the user
+            description: Products used by the user
         - entity_var:
             name: open_support_tickets
             from: inputs/rsIdentifies
             select: sum(open_support_tickets::real)
             description: Total support tickets currently open
         - entity_var:
-            name: data_used_mobile
+            name: personal_loan_amt
             from: inputs/rsIdentifies
-            select: first_value(data_used_mobile ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Total number of GBs used on Boost Mobile
+            select: sum(personal_loan_amt::real)
+            description: Loan amount for all personal loans
         - entity_var:
-            name: data_used_infinite
+            name: retail_loan_amt
             from: inputs/rsIdentifies
-            select: first_value(data_used_infinite ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Total number of GBs used on Boost Infinite
+            select: sum(retail_loan_amt::real)
+            description: Loan amount for all retail loans
+        - entity_var:
+            name: auto_loan_amt
+            from: inputs/rsIdentifies
+            select: sum(auto_loan_amt::real)
+            description: Loan amount for all auto loans
+        - entity_var:
+            name: total_loan_amt
+            from: inputs/rsIdentifies
+            select: sum(personal_loan_amt::real) + sum(retail_loan_amt::real) + sum(auto_loan_amt::real)
+            description: Total amount of al loans
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null
             description: Total individual sessions created till date.
+        - entity_var:
+            name: first_name
+            from: inputs/rsIdentifies
+            select: first_value(first_name)
+            window:
+              order_by:
+                - timestamp desc
+            where: first_name is not null and first_name!=''
+            description: First name of the customer
+        - entity_var:
+            name: last_name
+            from: inputs/rsIdentifies
+            select: first_value(last_name)
+            window:
+              order_by:
+                - timestamp desc
+            where: last_name is not null and last_name!=''
+            description: Last name of the customer
+        - entity_var:
+            name: recent_user_email
+            from: inputs/rsIdentifies
+            select: first_value(email)
+            window:
+              order_by:
+                - timestamp desc
+            where: email is not null and email!=''
+            description: Email associated to the order
+        - entity_var:
+            name: days_since_account_creation
+            select: "{{macro_datediff('min(timestamp)')}}"
+            from: inputs/rsIdentifies
+            description: Number of days since account was created
         - entity_var:
             name: max_timestamp_cart_update
             select: max(timestamp)
@@ -168,38 +204,6 @@ models:
                 - timestamp desc
             description: The total value of products that are part of the last transaction.
         - entity_var:
-            name: days_since_account_creation
-            select: "{{macro_datediff('min(timestamp)')}}"
-            from: inputs/rsIdentifies
-            description: Number of days since loyaltt account was created
-        - entity_var:
-            name: first_name
-            from: inputs/rsIdentifies
-            select: first_value(first_name)
-            window:
-              order_by:
-                - timestamp desc
-            where: first_name is not null and first_name!=''
-            description: First name of the customer
-        - entity_var:
-            name: last_name
-            from: inputs/rsIdentifies
-            select: first_value(last_name)
-            window:
-              order_by:
-                - timestamp desc
-            where: last_name is not null and last_name!=''
-            description: Last name of the customer
-        - entity_var:
-            name: user_email
-            from: inputs/rsIdentifies
-            select: first_value(email)
-            window:
-              order_by:
-                - timestamp desc
-            where: email is not null and email!=''
-            description: Email associated to the order
-        - entity_var:
             name: total_carts
             select: count(distinct token)
             from: inputs/rsCartUpdate
@@ -288,8 +292,10 @@ models:
             description: The list of unique products bought by the user.
       features:
         - product_used
-        - data_used_mobile
-        - data_used_infinite
+        - personal_loan_amt
+        - retail_loan_amt
+        - auto_loan_amt
+        - total_loan_amt
         - open_support_tickets
         - total_sessions_to_date
         - days_since_account_creation
