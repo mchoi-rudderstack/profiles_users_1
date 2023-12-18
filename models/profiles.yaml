@@ -302,7 +302,7 @@ models:
         - days_since_last_seen
         - first_name
         - last_name
-        - user_email
+        - recent_user_email
         - last_transaction_value
         - highest_transaction_value
         - median_transaction_value
