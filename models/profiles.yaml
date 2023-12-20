@@ -29,36 +29,6 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: product_used
-            from: inputs/rsIdentifies
-            select: array_agg(distinct product_used)
-            description: Products used by the user
-        - entity_var:
-            name: open_support_tickets
-            from: inputs/rsIdentifies
-            select: sum(open_support_tickets::real)
-            description: Total support tickets currently open
-        - entity_var:
-            name: personal_loan_amt
-            from: inputs/rsIdentifies
-            select: sum(personal_loan_amt::real)
-            description: Loan amount for all personal loans
-        - entity_var:
-            name: retail_loan_amt
-            from: inputs/rsIdentifies
-            select: sum(retail_loan_amt::real)
-            description: Loan amount for all retail loans
-        - entity_var:
-            name: auto_loan_amt
-            from: inputs/rsIdentifies
-            select: sum(auto_loan_amt::real)
-            description: Loan amount for all auto loans
-        - entity_var:
-            name: total_loan_amt
-            from: inputs/rsIdentifies
-            select: sum(personal_loan_amt::real) + sum(retail_loan_amt::real) + sum(auto_loan_amt::real)
-            description: Total amount of al loans
-        - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
@@ -291,12 +261,6 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - product_used
-        - personal_loan_amt
-        - retail_loan_amt
-        - auto_loan_amt
-        - total_loan_amt
-        - open_support_tickets
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
