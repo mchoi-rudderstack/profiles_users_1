@@ -30,7 +30,7 @@ models:
       vars:
         - entity_var:
             name: points_balance
-            from: models/rsIdentifies
+            from: inputs/rsIdentifies
             select: first_value(points_balance)
             window:
               order_by:
