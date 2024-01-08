@@ -29,6 +29,14 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
+            name: points_balance
+            from: models/rsIdentifies
+            select: first_value(points_balance)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of rewards points available on account
+        - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
@@ -261,6 +269,7 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
+        - points_balance
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
