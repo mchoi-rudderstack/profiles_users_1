@@ -1,4 +1,4 @@
-emodels:
+models:
   - name: ecomm_loyal_customers_stitcher
     model_type: id_stitcher
     model_spec:
