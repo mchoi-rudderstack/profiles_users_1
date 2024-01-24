@@ -1,4 +1,4 @@
-models:
+emodels:
   - name: ecomm_loyal_customers_stitcher
     model_type: id_stitcher
     model_spec:
@@ -29,26 +29,21 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: looking_for
+            name: invested_amount
             from: inputs/rsIdentifies
-            select: array_agg(distinct looking_for)
-            description: What type of care if the user looking for
-        - entity_var:
-            name: appointments_booked
-            from: inputs/rsIdentifies
-            select: first_value(appointments_booked ignore nulls)
+            select: first_value(invested_amount ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The total lifetime number of appointments booked
+            description: The total amount invested
         - entity_var:
-            name: insurance_provider
+            name: remaining_balance
             from: inputs/rsIdentifies
-            select: first_value(insurance_provider ignore nulls)
+            select: first_value(remaining_balance ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The insurance provider of the user
+            description: The amount available to invest
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -109,9 +104,8 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - looking_for
-        - appointments_booked
-        - insurance_provider
+        - invested_amount
+        - remaining_balance
         - first_name
         - last_name
         - recent_user_email
