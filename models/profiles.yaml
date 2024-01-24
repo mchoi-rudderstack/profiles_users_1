@@ -42,6 +42,14 @@ models:
                 - timestamp desc
             description: The total amount invested
         - entity_var:
+            name: retirement_fund_amount
+            from: inputs/rsIdentifies
+            select: first_value(retirement_fund_amount ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The total amount in the retirement fund
+        - entity_var:
             name: remaining_balance
             from: inputs/rsIdentifies
             select: first_value(remaining_balance ignore nulls)
@@ -111,6 +119,7 @@ models:
       features:
         - services_used
         - invested_amount
+        - retirement_fund_amount
         - remaining_balance
         - first_name
         - last_name
