@@ -34,6 +34,19 @@ models:
             select: array_agg(distinct product_used)
             description: Services used by the user
         - entity_var:
+            name: virtual_advisor_sessions
+            from: inputs/rsIdentifies
+            select: sum(virtual_advisor_sessions::real)
+            description: The number of virtual advising sessions attended
+        - entity_var:
+            name: has_financial_advisor
+            from: inputs/rsIdentifies
+            select: first_value(has_financial_advisor ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Does the user have a financial advisor
+        - entity_var:
             name: invested_amount
             from: inputs/rsIdentifies
             select: first_value(invested_amount ignore nulls)
@@ -118,6 +131,8 @@ models:
               - max_timestamp_pages
       features:
         - services_used
+        - virtual_advisor_sessions
+        - has_financial_advisor
         - invested_amount
         - retirement_fund_amount
         - remaining_balance
