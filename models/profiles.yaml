@@ -29,47 +29,23 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: services_used
+            name: shows_watched
             from: inputs/rsIdentifies
-            select: array_agg(distinct product_used)
-            description: Services used by the user
+            select: array_agg(distinct shows_watched)
+            description: All shows viewed by the user
         - entity_var:
-            name: virtual_advisor_sessions
+            name: total_episodes_watched
             from: inputs/rsIdentifies
-            select: sum(virtual_advisor_sessions::real)
-            description: The number of virtual advising sessions attended
+            select: sum(total_episodes_watched::real)
+            description: The number of episodes watched
         - entity_var:
-            name: has_financial_advisor
+            name: premium_trial_status
             from: inputs/rsIdentifies
-            select: first_value(has_financial_advisor ignore nulls)
+            select: first_value(premium_trial_status ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Does the user have a financial advisor
-        - entity_var:
-            name: invested_amount
-            from: inputs/rsIdentifies
-            select: first_value(invested_amount ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The total amount invested
-        - entity_var:
-            name: retirement_fund_amount
-            from: inputs/rsIdentifies
-            select: first_value(retirement_fund_amount ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The total amount in the retirement fund
-        - entity_var:
-            name: remaining_balance
-            from: inputs/rsIdentifies
-            select: first_value(remaining_balance ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The amount available to invest
+            description: The premium trial status: not_started, ongoing, expired, upgraded
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -130,12 +106,9 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - services_used
-        - virtual_advisor_sessions
-        - has_financial_advisor
-        - invested_amount
-        - retirement_fund_amount
-        - remaining_balance
+        - shows_watched
+        - total_episodes_watched
+        - premium_trial_status
         - first_name
         - last_name
         - recent_user_email
