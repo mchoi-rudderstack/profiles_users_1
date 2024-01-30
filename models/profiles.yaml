@@ -45,7 +45,7 @@ models:
             window:
               order_by:
                 - timestamp desc
-            description: The premium trial status: not_started, ongoing, expired, upgraded
+            description: The premium trial status - not_started, ongoing, expired, upgraded
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
