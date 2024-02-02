@@ -29,31 +29,34 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: shows_watched
+            name: age
             from: inputs/rsIdentifies
-            select: array_agg(distinct shows_watched)
-            description: All shows viewed by the user
-        - entity_var:
-            name: total_episodes_watched
-            from: inputs/rsIdentifies
-            select: sum(total_episodes_watched::real)
-            description: The number of episodes watched
-        - entity_var:
-            name: premium_trial_status
-            from: inputs/rsIdentifies
-            select: first_value(premium_trial_status ignore nulls)
+            select: first_value(age ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The premium trial status - not_started, ongoing, expired, upgraded
+            description: The age of the user
         - entity_var:
-            name: churn_prediction_score
+            name: income
             from: inputs/rsIdentifies
-            select: first_value(churn_prediction_score ignore nulls)
+            select: first_value(income ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The churn prediction score based on past activity
+            description: The income of the user
+        - entity_var:
+            name: voted_in_past_election
+            from: inputs/rsIdentifies
+            select: first_value(voted_in_past_election ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Did the user vote in the last election?
+        - entity_var:
+            name: interactions_in_last_30_days
+            from: inputs/rsIdentifies
+            select: sum(interactions_in_last_30_days::real)
+            description: The number of interactions with this user
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -114,10 +117,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - shows_watched
-        - total_episodes_watched
-        - premium_trial_status
-        - churn_prediction_score
+        - age
+        - income
+        - voted_in_past_election
+        - interactions_in_last_30_days
         - first_name
         - last_name
         - recent_user_email
