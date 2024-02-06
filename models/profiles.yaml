@@ -59,7 +59,7 @@ models:
             window:
               order_by:
                 - timestamp desc
-            description: The total_incentives for the user
+            description: The total incentives for the user
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -122,7 +122,7 @@ models:
       features:
         - calculator_completed
         - upfront_discounts
-        - available_tax_incentives
+        - available_tax_credits
         - total_incentives
         - first_name
         - last_name
