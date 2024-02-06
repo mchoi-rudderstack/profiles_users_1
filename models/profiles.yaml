@@ -29,34 +29,37 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: age
+            name: calculator_completed
             from: inputs/rsIdentifies
-            select: first_value(age ignore nulls)
+            select: first_value(calculator_completed ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The age of the user
+            description: Has the user completed the IRA Savings Calculator?
         - entity_var:
-            name: income
+            name: upfront_discounts
             from: inputs/rsIdentifies
-            select: first_value(income ignore nulls)
+            select: first_value(upfront_discounts ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The income of the user
+            description: The upfront_discounts for the user
         - entity_var:
-            name: voted_in_past_election
+            name: available_tax_credits
             from: inputs/rsIdentifies
-            select: first_value(voted_in_past_election ignore nulls)
+            select: first_value(available_tax_credits ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Did the user vote in the last election?
+            description: The available tax credits for the user
         - entity_var:
-            name: interactions_in_last_30_days
+            name: total_incentives
             from: inputs/rsIdentifies
-            select: sum(interactions_in_last_30_days::real)
-            description: The number of interactions with this user
+            select: first_value(total_incentives ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The total_incentives for the user
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -117,10 +120,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - age
-        - income
-        - voted_in_past_election
-        - interactions_in_last_30_days
+        - calculator_completed
+        - upfront_discounts
+        - available_tax_incentives
+        - total_incentives
         - first_name
         - last_name
         - recent_user_email
