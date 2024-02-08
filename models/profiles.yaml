@@ -42,6 +42,19 @@ models:
             select: sum(num_of_clients::real)
             description: The number of clients for the accountant
         - entity_var:
+            name: first_attribution_source
+            from: inputs/rsIdentifies
+            select: first_value(attribution_source ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The first attribution source associated to the accountant
+        - entity_var:
+            name: all_attribution_sources
+            from: inputs/rsIdentifies
+            select: array_agg(distinct attribution_source)
+            description: All attribution sources associated to the accountant
+        - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
@@ -103,6 +116,8 @@ models:
       features:
         - bill_plan_for_accountants
         - number_of_clients
+        - first_attribution_source
+        - all_attribution_sources
         - first_name
         - last_name
         - recent_user_email
