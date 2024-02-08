@@ -29,31 +29,31 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: bill_plan_for_accountants
+            name: shows_watched
             from: inputs/rsIdentifies
-            select: first_value(bill_plan_for_accountants ignore nulls)
+            select: array_agg(distinct shows_watched)
+            description: All shows viewed by the user
+        - entity_var:
+            name: total_episodes_watched
+            from: inputs/rsIdentifies
+            select: sum(total_episodes_watched::real)
+            description: The number of episodes watched
+        - entity_var:
+            name: premium_trial_status
+            from: inputs/rsIdentifies
+            select: first_value(premium_trial_status ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: What plan is the accountant on?
+            description: The premium trial status - not_started, ongoing, expired, upgraded
         - entity_var:
-            name: number_of_clients
+            name: churn_prediction_score
             from: inputs/rsIdentifies
-            select: sum(num_of_clients::real)
-            description: The number of clients for the accountant
-        - entity_var:
-            name: first_attribution_source
-            from: inputs/rsIdentifies
-            select: first_value(attribution_source ignore nulls)
+            select: first_value(churn_prediction_score ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The first attribution source associated to the accountant
-        - entity_var:
-            name: all_attribution_sources
-            from: inputs/rsIdentifies
-            select: array_agg(distinct attribution_source)
-            description: All attribution sources associated to the accountant
+            description: The churn prediction score based on past activity
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -114,12 +114,13 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - bill_plan_for_accountants
-        - number_of_clients
-        - first_attribution_source
-        - all_attribution_sources
+        - shows_watched
+        - total_episodes_watched
+        - premium_trial_status
+        - churn_prediction_score
         - first_name
         - last_name
         - recent_user_email
         - days_since_account_creation
+        - days_since_last_seen
         - total_sessions_to_date
