@@ -29,9 +29,9 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: bill_plan_for_accountant
+            name: bill_plan_for_accountants
             from: inputs/rsIdentifies
-            select: first_value(bill_plan_for_accountant ignore nulls)
+            select: first_value(bill_plan_for_accountants ignore nulls)
             window:
               order_by:
                 - timestamp desc
