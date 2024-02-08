@@ -101,7 +101,7 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - bill_plan_for_accountant
+        - bill_plan_for_accountants
         - number_of_clients
         - first_name
         - last_name
