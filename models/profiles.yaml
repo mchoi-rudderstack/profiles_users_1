@@ -29,37 +29,18 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: calculator_completed
+            name: bill_plan_for_accountant
             from: inputs/rsIdentifies
-            select: first_value(calculator_completed ignore nulls)
+            select: first_value(bill_plan_for_accountant ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Has the user completed the IRA Savings Calculator?
+            description: What plan is the accountant on?
         - entity_var:
-            name: upfront_discounts
+            name: number_of_clients
             from: inputs/rsIdentifies
-            select: first_value(upfront_discounts ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The upfront_discounts for the user
-        - entity_var:
-            name: available_tax_credits
-            from: inputs/rsIdentifies
-            select: first_value(available_tax_credits ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The available tax credits for the user
-        - entity_var:
-            name: total_incentives
-            from: inputs/rsIdentifies
-            select: first_value(total_incentives ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The total incentives for the user
+            select: sum(num_of_clients::real)
+            description: The number of clients for the accountant
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -120,13 +101,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - calculator_completed
-        - upfront_discounts
-        - available_tax_credits
-        - total_incentives
+        - bill_plan_for_accountant
+        - number_of_clients
         - first_name
         - last_name
         - recent_user_email
         - days_since_account_creation
-        - days_since_last_seen
         - total_sessions_to_date
