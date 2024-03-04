@@ -29,19 +29,27 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: shows_watched
+            name: content_watched
             from: inputs/rsIdentifies
-            select: array_agg(distinct shows_watched)
-            description: All shows viewed by the user
+            select: array_agg(distinct content_watched)
+            description: All content viewed by the user
         - entity_var:
             name: total_episodes_watched
             from: inputs/rsIdentifies
             select: sum(total_episodes_watched::real)
             description: The number of episodes watched
         - entity_var:
-            name: premium_trial_status
+            name: number_of_rentals
             from: inputs/rsIdentifies
-            select: first_value(premium_trial_status ignore nulls)
+            select: first_value(number ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of movies rented
+        - entity_var:
+            name: vikipass_trial_status
+            from: inputs/rsIdentifies
+            select: first_value(vikipass_trial_status ignore nulls)
             window:
               order_by:
                 - timestamp desc
@@ -114,9 +122,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - shows_watched
+        - content_watched
         - total_episodes_watched
-        - premium_trial_status
+        - number_of_rentals
+        - vikipass_trial_status
         - churn_prediction_score
         - first_name
         - last_name
