@@ -17,6 +17,110 @@ models:
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
+      macros:
+        - name: macro_datediff
+          inputs:
+            - column
+          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}), GETDATE()) {% endif %}"
+        - name: macro_datediff_n
+          inputs:
+            - column
+            - number_of_days
+          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
+      vars:
+        - entity_var:
+            name: content_watched
+            from: inputs/rsIdentifies
+            select: array_agg(distinct content_watched)
+            description: All content viewed by the user
+        - entity_var:
+            name: total_episodes_watched
+            from: inputs/rsIdentifies
+            select: sum(total_episodes_watched::real)
+            description: The number of episodes watched
+        - entity_var:
+            name: number_of_rentals
+            from: inputs/rsIdentifies
+            select: first_value(number ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of movies rented
+        - entity_var:
+            name: vikipass_trial_status
+            from: inputs/rsIdentifies
+            select: first_value(vikipass_trial_status ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The premium trial status - not_started, ongoing, expired, upgraded
+        - entity_var:
+            name: churn_prediction_score
+            from: inputs/rsIdentifies
+            select: first_value(churn_prediction_score ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The churn prediction score based on past activity
+        - entity_var:
+            name: total_sessions_to_date
+            from: models/rsTracksUnionPages
+            select: count(distinct context_session_id)
+            where: context_session_id is not null
+            description: Total individual sessions created till date.
+        - entity_var:
+            name: first_name
+            from: inputs/rsIdentifies
+            select: first_value(first_name)
+            window:
+              order_by:
+                - timestamp desc
+            where: first_name is not null and first_name!=''
+            description: First name of the customer
+        - entity_var:
+            name: last_name
+            from: inputs/rsIdentifies
+            select: first_value(last_name)
+            window:
+              order_by:
+                - timestamp desc
+            where: last_name is not null and last_name!=''
+            description: Last name of the customer
+        - entity_var:
+            name: recent_user_email
+            from: inputs/rsIdentifies
+            select: first_value(email)
+            window:
+              order_by:
+                - timestamp desc
+            where: email is not null and email!=''
+            description: Email associated to the order
+        - entity_var:
+            name: days_since_account_creation
+            select: "{{macro_datediff('min(timestamp)')}}"
+            from: inputs/rsIdentifies
+            description: Number of days since account was created
+        - entity_var:
+            name: days_since_last_seen
+            select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
+            dependencies:
+              - max_timestamp_bw_tracks_pages
+            description: Days since user last logged in
+        - entity_var:
+            name: max_timestamp_tracks
+            select: max(timestamp)
+            from: inputs/rsTracks
+        - entity_var:
+            name: max_timestamp_pages
+            select: max(timestamp)
+            from: inputs/rsPages
+            description: The total value of products that are part of the last transaction.
+        - entity_var:
+            name: max_timestamp_bw_tracks_pages
+            select: CASE WHEN max_timestamp_tracks>=max_timestamp_pages THEN max_timestamp_tracks ELSE max_timestamp_pages END
+            dependencies:
+              - max_timestamp_tracks
+              - max_timestamp_pages
       features:
         - content_watched
         - total_episodes_watched
@@ -29,110 +133,3 @@ models:
         - days_since_account_creation
         - days_since_last_seen
         - total_sessions_to_date
-      macros:
-        - name: macro_datediff
-          inputs:
-            - column
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}), GETDATE()) {% endif %}"
-        - name: macro_datediff_n
-          inputs:
-            - column
-            - number_of_days
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
-var_groups:
-  - name: user_vars
-    entity_key: user
-    vars:
-      - entity_var:
-          name: content_watched
-          from: inputs/rsIdentifies
-          select: array_agg(distinct content_watched)
-          description: All content viewed by the user
-      - entity_var:
-          name: total_episodes_watched
-          from: inputs/rsIdentifies
-          select: sum(total_episodes_watched::real)
-          description: The number of episodes watched
-      - entity_var:
-          name: number_of_rentals
-          from: inputs/rsIdentifies
-          select: first_value(number ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Number of movies rented
-      - entity_var:
-          name: vikipass_trial_status
-          from: inputs/rsIdentifies
-          select: first_value(vikipass_trial_status ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: The premium trial status - not_started, ongoing, expired, upgraded
-      - entity_var:
-          name: churn_prediction_score
-          from: inputs/rsIdentifies
-          select: first_value(churn_prediction_score ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: The churn prediction score based on past activity
-      - entity_var:
-          name: total_sessions_to_date
-          from: models/rsTracksUnionPages
-          select: count(distinct context_session_id)
-          where: context_session_id is not null
-          description: Total individual sessions created till date.
-      - entity_var:
-          name: first_name
-          from: inputs/rsIdentifies
-          select: first_value(first_name)
-          window:
-            order_by:
-              - timestamp desc
-          where: first_name is not null and first_name!=''
-          description: First name of the customer
-      - entity_var:
-          name: last_name
-          from: inputs/rsIdentifies
-          select: first_value(last_name)
-          window:
-            order_by:
-              - timestamp desc
-          where: last_name is not null and last_name!=''
-          description: Last name of the customer
-      - entity_var:
-          name: recent_user_email
-          from: inputs/rsIdentifies
-          select: first_value(email)
-          window:
-            order_by:
-              - timestamp desc
-          where: email is not null and email!=''
-          description: Email associated to the order
-      - entity_var:
-          name: days_since_account_creation
-          select: "{{macro_datediff('min(timestamp)')}}"
-          from: inputs/rsIdentifies
-          description: Number of days since account was created
-      - entity_var:
-          name: days_since_last_seen
-          select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
-          dependencies:
-            - max_timestamp_bw_tracks_pages
-          description: Days since user last logged in
-      - entity_var:
-          name: max_timestamp_tracks
-          select: max(timestamp)
-          from: inputs/rsTracks
-      - entity_var:
-          name: max_timestamp_pages
-          select: max(timestamp)
-          from: inputs/rsPages
-          description: The total value of products that are part of the last transaction.
-      - entity_var:
-          name: max_timestamp_bw_tracks_pages
-          select: CASE WHEN max_timestamp_tracks>=max_timestamp_pages THEN max_timestamp_tracks ELSE max_timestamp_pages END
-          dependencies:
-            - max_timestamp_tracks
-            - max_timestamp_pages
