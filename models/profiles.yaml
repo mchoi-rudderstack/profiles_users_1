@@ -34,10 +34,7 @@ var_groups:
           name: titles_watched
           from: inputs/rsIdentifies
           select: array_agg(array_construct('love song for illusion','the innocent man','perfect marriage revenge', 'yong an dream')[ABS(MOD(Random(),4))]::text)
-          window:
-            order_by:
-              - timestamp desc
-          description: Number of unique shows viewed
+          description: All unique shows viewed
       - entity_var:
           name: unique_titles_watched
           from: inputs/rsIdentifies
