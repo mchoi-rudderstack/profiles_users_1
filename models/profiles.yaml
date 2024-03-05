@@ -15,7 +15,7 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
-        - content_watched
+        - unique_titles_watched
         - total_episodes_watched
         - total_movies_rented
         - vikipass_trial_status
@@ -29,14 +29,17 @@ var_groups:
     entity_key: user
     vars:
       - entity_var:
-          name: content_watched
+          name: unique_titles_watched
           from: inputs/rsIdentifies
-          select: array_agg(distinct content_watched)
-          description: All content viewed by the user
+          select: first_value(number ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Number of unique shows viewed
       - entity_var:
           name: total_episodes_watched
           from: inputs/rsIdentifies
-          select: array_agg(distinct number)
+          select: sum(number::real)
           description: Number of episodes watched in total
       - entity_var:
           name: total_movies_rented
