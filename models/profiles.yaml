@@ -36,8 +36,11 @@ models:
         - entity_var:
             name: total_episodes_watched
             from: inputs/rsIdentifies
-            select: sum(total_episodes_watched::real)
-            description: The number of episodes watched
+            select: first_value(total_episodes_watched ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of episodes watched in total
         - entity_var:
             name: number_of_rentals
             from: inputs/rsIdentifies
