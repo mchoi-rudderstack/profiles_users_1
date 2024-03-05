@@ -125,7 +125,7 @@ models:
         - content_watched
         - total_episodes_watched
         - number_of_rentals
-        - vikipass_trial_status
+        - premium_trial_status
         - churn_prediction_score
         - first_name
         - last_name
