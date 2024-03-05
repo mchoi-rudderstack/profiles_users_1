@@ -36,10 +36,7 @@ var_groups:
       - entity_var:
           name: total_episodes_watched
           from: inputs/rsIdentifies
-          select: first_value(number ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
+          select: array_agg(distinct number)
           description: Number of episodes watched in total
       - entity_var:
           name: total_movies_rented
@@ -52,7 +49,7 @@ var_groups:
       - entity_var:
           name: vikipass_trial_status
           from: inputs/rsIdentifies
-          select: array_agg(distinct vikipass_trial_status)
+          select: count(distinct vikipass_trial_status)
           description: The premium trial status - not_started, ongoing, expired, upgraded
       - entity_var:
           name: churn_prediction_score
