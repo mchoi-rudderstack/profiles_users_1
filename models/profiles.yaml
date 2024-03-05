@@ -88,6 +88,4 @@ models:
         - first_name
         - last_name
         - recent_user_email
-        - days_since_account_creation
-        - days_since_last_seen
         - total_sessions_to_date
