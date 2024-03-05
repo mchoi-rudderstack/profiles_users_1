@@ -36,7 +36,7 @@ models:
         - entity_var:
             name: total_episodes_watched
             from: inputs/rsIdentifies
-            select: first_value(total_episodes_watched ignore nulls)
+            select: first_value(number ignore nulls)
             window:
               order_by:
                 - timestamp desc
