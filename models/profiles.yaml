@@ -36,7 +36,7 @@ var_groups:
       - entity_var:
           name: total_episodes_watched
           from: inputs/rsIdentifies
-          select: sum(number::real)
+          select: array_agg(distinct number)
           description: Number of episodes watched in total
       - entity_var:
           name: total_movies_rented
