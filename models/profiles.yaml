@@ -32,7 +32,7 @@ models:
                 - timestamp desc
             description: Number of episodes watched in total
         - entity_var:
-            name: movies_rented
+            name: total_movies_rented
             from: inputs/rsIdentifies
             select: first_value(movies_rented ignore nulls)
             window:
@@ -91,6 +91,7 @@ models:
       features:
         - content_watched
         - total_episodes_watched
+        - total_movies_rented
         - premium_trial_status
         - churn_prediction_score
         - first_name
