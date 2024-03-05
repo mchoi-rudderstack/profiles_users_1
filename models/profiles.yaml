@@ -19,6 +19,7 @@ models:
         - total_episodes_watched
         - total_movies_rented
         - vikipass_trial_completed
+        - ltv
         - churn_prediction_score
         - most_recent_email
         - first_name
@@ -57,7 +58,7 @@ var_groups:
       - entity_var:
           name: ltv
           from: inputs/rsIdentifies
-          select: total_movies_rented*UNIFORM(0, 5, random())+total_episodes_watched
+          select: uniform(1, 100, random())
           description: User LTV
       - entity_var:
           name: churn_prediction_score
