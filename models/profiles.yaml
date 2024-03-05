@@ -8,9 +8,6 @@ models:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
         - from: inputs/rsPages
-        - from: inputs/rsOrderCreated
-        - from: inputs/rsOrderCancelled
-        - from: inputs/rsCartUpdate
   # Remove the section below, if you don't want to generate a feature table
   - name: users
     model_type: feature_table_model
