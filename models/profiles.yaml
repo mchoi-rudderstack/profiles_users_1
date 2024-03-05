@@ -20,9 +20,9 @@ models:
         - total_movies_rented
         - vikipass_trial_completed
         - churn_prediction_score
+        - most_recent_email
         - first_name
         - last_name
-        - recent_user_email
         - total_sessions_to_date
 var_groups:
   - name: user_vars
@@ -87,7 +87,7 @@ var_groups:
           where: last_name is not null and last_name!=''
           description: Last name of the customer
       - entity_var:
-          name: recent_user_email
+          name: most_recent_email
           from: inputs/rsIdentifies
           select: first_value(email)
           window:
