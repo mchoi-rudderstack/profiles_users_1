@@ -61,7 +61,7 @@ models:
         - entity_var:
             name: first_name
             from: inputs/rsIdentifies
-            select: first_value(first_name)
+            select: first_value(first_name ignore nulls)
             window:
               order_by:
                 - timestamp desc
@@ -70,7 +70,7 @@ models:
         - entity_var:
             name: last_name
             from: inputs/rsIdentifies
-            select: first_value(last_name)
+            select: first_value(last_name ignore nulls)
             window:
               order_by:
                 - timestamp desc
