@@ -42,14 +42,6 @@ models:
                 - timestamp desc
             description: Number of episodes watched in total
         - entity_var:
-            name: number_of_rentals
-            from: inputs/rsIdentifies
-            select: first_value(number ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of movies rented
-        - entity_var:
             name: premium_trial_status
             from: inputs/rsIdentifies
             select: first_value(premium_trial_status ignore nulls)
@@ -127,7 +119,6 @@ models:
       features:
         - content_watched
         - total_episodes_watched
-        - number_of_rentals
         - premium_trial_status
         - churn_prediction_score
         - first_name
