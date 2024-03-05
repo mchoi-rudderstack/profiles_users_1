@@ -1,5 +1,0 @@
-macros:
-  - name: array_agg
-    inputs:
-      - column_name
-    value: "array_agg( distinct {{column_name}})"
