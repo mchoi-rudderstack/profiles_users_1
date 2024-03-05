@@ -17,16 +17,6 @@ models:
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
-      macros:
-        - name: macro_datediff
-          inputs:
-            - column
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}), GETDATE()) {% endif %}"
-        - name: macro_datediff_n
-          inputs:
-            - column
-            - number_of_days
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
             name: content_watched
@@ -44,7 +34,7 @@ models:
         - entity_var:
             name: premium_trial_status
             from: inputs/rsIdentifies
-            select: first_value(premium_trial_status ignore nulls)
+            select: first_value(premium_trial_status)
             window:
               order_by:
                 - timestamp desc
@@ -90,32 +80,6 @@ models:
                 - timestamp desc
             where: email is not null and email!=''
             description: Email associated to the order
-        - entity_var:
-            name: days_since_account_creation
-            select: "{{macro_datediff('min(timestamp)')}}"
-            from: inputs/rsIdentifies
-            description: Number of days since account was created
-        - entity_var:
-            name: days_since_last_seen
-            select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
-            dependencies:
-              - max_timestamp_bw_tracks_pages
-            description: Days since user last logged in
-        - entity_var:
-            name: max_timestamp_tracks
-            select: max(timestamp)
-            from: inputs/rsTracks
-        - entity_var:
-            name: max_timestamp_pages
-            select: max(timestamp)
-            from: inputs/rsPages
-            description: The total value of products that are part of the last transaction.
-        - entity_var:
-            name: max_timestamp_bw_tracks_pages
-            select: CASE WHEN max_timestamp_tracks>=max_timestamp_pages THEN max_timestamp_tracks ELSE max_timestamp_pages END
-            dependencies:
-              - max_timestamp_tracks
-              - max_timestamp_pages
       features:
         - content_watched
         - total_episodes_watched
