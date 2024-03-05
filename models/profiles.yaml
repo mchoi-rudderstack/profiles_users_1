@@ -16,7 +16,6 @@ models:
       entity_key: user
       features:
         - titles_watched
-        - unique_titles_watched
         - total_episodes_watched
         - total_movies_rented
         - vikipass_trial_completed
@@ -35,14 +34,6 @@ var_groups:
           from: inputs/rsIdentifies
           select: array_agg(array_construct('love song for illusion','the innocent man','perfect marriage revenge', 'yong an dream')[ABS(MOD(Random(),4))]::text)
           description: All unique shows viewed
-      - entity_var:
-          name: unique_titles_watched
-          from: inputs/rsIdentifies
-          select: first_value(number ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Number of unique shows viewed
       - entity_var:
           name: total_episodes_watched
           from: inputs/rsIdentifies
