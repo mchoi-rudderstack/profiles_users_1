@@ -55,6 +55,11 @@ var_groups:
           select: round(right(random(), 1)/10)
           description: Has the user completed a vikipass trial?
       - entity_var:
+          name: ltv
+          from: inputs/rsIdentifies
+          select: total_movies_rented*UNIFORM(0, 5, random())+total_episodes_watched
+          description: User LTV
+      - entity_var:
           name: churn_prediction_score
           from: inputs/rsIdentifies
           select: first_value(churn_score ignore nulls)
