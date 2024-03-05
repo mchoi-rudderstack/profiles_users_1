@@ -15,6 +15,7 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
+        - titles_watched
         - unique_titles_watched
         - total_episodes_watched
         - total_movies_rented
@@ -29,6 +30,14 @@ var_groups:
   - name: user_vars
     entity_key: user
     vars:
+      - entity_var:
+          name: titles_watched
+          from: inputs/rsIdentifies
+          select: array_agg(array_construct('love song for illusion','the innocent man','perfect marriage revenge', 'yong an dream')[ABS(MOD(Random(),4))]::text)
+          window:
+            order_by:
+              - timestamp desc
+          description: Number of unique shows viewed
       - entity_var:
           name: unique_titles_watched
           from: inputs/rsIdentifies
