@@ -18,7 +18,7 @@ models:
         - entity_var:
             name: content_watched
             from: inputs/rsIdentifies
-            select: array_agg(distinct content_watched)
+            select: count(distinct content_watched)
             description: All content viewed by the user
         - entity_var:
             name: total_episodes_watched
