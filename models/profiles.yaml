@@ -37,9 +37,9 @@ models:
                 - timestamp desc
             description: Number of movies rented
         - entity_var:
-            name: premium_trial_status
+            name: vikipass_trial_status
             from: inputs/rsIdentifies
-            select: first_value(premium_trial_status ignore nulls)
+            select: first_value(vikipass_trial_status ignore nulls)
             window:
               order_by:
                 - timestamp desc
@@ -89,7 +89,7 @@ models:
         - content_watched
         - total_episodes_watched
         - total_movies_rented
-        - premium_trial_status
+        - vikipass_trial_status
         - churn_prediction_score
         - first_name
         - last_name
