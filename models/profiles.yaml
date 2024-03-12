@@ -15,37 +15,48 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
-        - days_active_last_30_days
-        - total_jobs_viewed
-        - total_jobs_applied
-        - total_interviews_completed
+        - titles_watched
+        - total_episodes_watched
+        - total_movies_rented
+        - vikipass_trial_completed
+        - ltv
         - churn_prediction_score
         - most_recent_email
+        - firstname
+        - lastname
         - total_sessions_to_date
 var_groups:
   - name: user_vars
     entity_key: user
     vars:
       - entity_var:
-          name: days_active_last_30_days
+          name: titles_watched
           from: inputs/rsIdentifies
-          select: uniform(10, 100, random())
-          description: The number of days the user has been active in the last 30 days
+          select: array_agg(array_construct('love song for illusion','the innocent man','perfect marriage revenge', 'yong an dream')[ABS(MOD(Random(),4))]::text)
+          description: All unique shows viewed
       - entity_var:
-          name: total_jobs_viewed
+          name: total_episodes_watched
           from: inputs/rsIdentifies
-          select: uniform(50, 100, random())
+          select: sum(number::real)
           description: Number of episodes watched in total
       - entity_var:
-          name: total_jobs_applied
+          name: total_movies_rented
           from: inputs/rsIdentifies
-          select: uniform(20, 50, random())
+          select: first_value(movies_rented ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
           description: Number of movies rented
       - entity_var:
-          name: total_interviews_completed
+          name: vikipass_trial_completed
           from: inputs/rsIdentifies
-          select: uniform(1, 20, random())
+          select: round(right(random(), 1)/10)
           description: Has the user completed a vikipass trial?
+      - entity_var:
+          name: ltv
+          from: inputs/rsIdentifies
+          select: uniform(1, 100, random())
+          description: User LTV
       - entity_var:
           name: churn_prediction_score
           from: inputs/rsIdentifies
@@ -60,6 +71,24 @@ var_groups:
           select: count(distinct context_session_id)
           where: context_session_id is not null
           description: Total individual sessions created till date.
+      - entity_var:
+          name: firstname
+          from: inputs/rsIdentifies
+          select: first_value(first_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          where: first_name is not null and first_name!=''
+          description: First name of the customer
+      - entity_var:
+          name: lastname
+          from: inputs/rsIdentifies
+          select: first_value(last_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          where: last_name is not null and last_name!=''
+          description: Last name of the customer
       - entity_var:
           name: most_recent_email
           from: inputs/rsIdentifies
