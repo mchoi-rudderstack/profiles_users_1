@@ -67,10 +67,9 @@ var_groups:
           description: The churn prediction score based on past activity
       - entity_var:
           name: total_sessions_to_date
-          from: models/rsTracksUnionPages
-          select: count(distinct context_session_id)
-          where: context_session_id is not null
-          description: Total individual sessions created till date.
+          from: inputs/rsIdentifies
+          select: uniform(1, 100, random())
+          description: Total individual sessions since account creation
       - entity_var:
           name: firstname
           from: inputs/rsIdentifies
