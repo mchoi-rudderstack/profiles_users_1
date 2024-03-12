@@ -101,5 +101,5 @@ var_groups:
       - entity_var:
           name: attribution_source
           from: inputs/rsIdentifies
-          select: max(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
+          select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
           description: Last touch attribution for the user
