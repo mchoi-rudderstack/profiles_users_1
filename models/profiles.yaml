@@ -25,6 +25,7 @@ models:
         - firstname
         - lastname
         - total_sessions_to_date
+        - attribution_source
 var_groups:
   - name: user_vars
     entity_key: user
@@ -97,3 +98,8 @@ var_groups:
               - timestamp desc
           where: email is not null and email!=''
           description: Email associated to the order
+      - entity_var:
+          name: attribution_source
+          from: inputs/rsIdentifies
+          select: max(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
+          description: Last touch attribution for the user
