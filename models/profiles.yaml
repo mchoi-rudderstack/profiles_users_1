@@ -32,7 +32,7 @@ var_groups:
       - entity_var:
           name: titles_watched
           from: inputs/rsIdentifies
-          select: array_agg(distinct array_construct('love song for illusion','the innocent man','perfect marriage revenge', 'yong an dream')[ABS(MOD(Random(),4))]::text)
+          select: array_agg(distinct content_watched)
           description: All unique shows viewed
       - entity_var:
           name: total_episodes_watched
