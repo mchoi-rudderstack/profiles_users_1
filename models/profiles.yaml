@@ -19,7 +19,7 @@ models:
         - total_episodes_watched
         - total_movies_rented
         - vikipass_trial_completed
-        - attribution_source
+        - attribution_sources
         - ltv
         - is_churned
         - churn_prediction_score
