@@ -58,6 +58,9 @@ var_groups:
           name: ltv
           from: inputs/rsIdentifies
           select: first_value(ltv ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
           description: User LTV
       - entity_var:
           name: is_converted
