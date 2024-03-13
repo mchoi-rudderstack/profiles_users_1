@@ -23,6 +23,8 @@ models:
         - most_recent_email
         - firstname
         - lastname
+        - is_churned
+        - churn_propensity_score
         - user_ltv
         - attribution_sources
         - marketing_campaign
@@ -66,7 +68,7 @@ var_groups:
               - timestamp desc
           description: User LTV
       - entity_var:
-          name: is_converted
+          name: is_churned
           from: inputs/rsIdentifies
           select: first_value(user_is_churned ignore nulls)
           window:
@@ -74,7 +76,7 @@ var_groups:
               - timestamp desc
           description: Current churn status of the user
       - entity_var:
-          name: lead_propensity_score
+          name: churn_propensity_score
           from: inputs/rsIdentifies
           select: first_value(propensity_to_churn ignore nulls)
           window:
