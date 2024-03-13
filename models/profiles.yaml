@@ -25,7 +25,7 @@ models:
         - lastname
         - user_ltv
         - attribution_sources
-        - campaign
+        - marketing_campaign
         - first_touch_score
         - last_touch_score
         - linear_attr_score
