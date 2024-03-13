@@ -21,8 +21,8 @@ models:
         - vikipass_trial_completed
         - attribution_sources
         - ltv
-        - is_churned
-        - churn_propensity_score
+        - is_converted
+        - lead_propensity_score
         - most_recent_email
         - firstname
         - lastname
@@ -60,7 +60,7 @@ var_groups:
           select: first_value(ltv ignore nulls)
           description: User LTV
       - entity_var:
-          name: is_churned
+          name: is_converted
           from: inputs/rsIdentifies
           select: first_value(user_is_churned ignore nulls)
           window:
@@ -68,7 +68,7 @@ var_groups:
               - timestamp desc
           description: Current churn status of the user
       - entity_var:
-          name: churn_propensity_score
+          name: lead_propensity_score
           from: inputs/rsIdentifies
           select: first_value(propensity_to_churn ignore nulls)
           window:
