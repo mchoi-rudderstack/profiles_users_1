@@ -19,13 +19,14 @@ models:
         - total_episodes_watched
         - total_movies_rented
         - vikipass_trial_completed
+        - attribution_source
         - ltv
+        - is_churned
         - churn_prediction_score
         - most_recent_email
         - firstname
         - lastname
         - total_sessions_to_date
-        - attribution_source
 var_groups:
   - name: user_vars
     entity_key: user
@@ -56,16 +57,24 @@ var_groups:
       - entity_var:
           name: ltv
           from: inputs/rsIdentifies
-          select: uniform(1, 100, random())
+          select: first_value(ltv ignore nulls)
           description: User LTV
       - entity_var:
-          name: churn_prediction_score
+          name: is_churned
           from: inputs/rsIdentifies
-          select: first_value(churn_score ignore nulls)
+          select: first_value(user_is_churned ignore nulls)
           window:
             order_by:
               - timestamp desc
-          description: The churn prediction score based on past activity
+          description: Current churn status of the user
+      - entity_var:
+          name: churn_propensity_score
+          from: inputs/rsIdentifies
+          select: first_value(propensity_to_churn ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: The churn propensity score 
       - entity_var:
           name: total_sessions_to_date
           from: inputs/rsIdentifies
@@ -99,7 +108,7 @@ var_groups:
           where: email is not null and email!=''
           description: Email associated to the order
       - entity_var:
-          name: attribution_source
+          name: attribution_sources
           from: inputs/rsIdentifies
           select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
-          description: Last touch attribution for the user
+          description: Attribution source in chronological order
