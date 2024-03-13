@@ -22,7 +22,7 @@ models:
         - attribution_sources
         - ltv
         - is_churned
-        - churn_prediction_score
+        - churn_propensity_score
         - most_recent_email
         - firstname
         - lastname
