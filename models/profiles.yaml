@@ -19,14 +19,17 @@ models:
         - total_episodes_watched
         - total_movies_rented
         - vikipass_trial_completed
-        - attribution_sources
-        - ltv
-        - is_converted
-        - lead_propensity_score
+        - total_sessions_to_date
         - most_recent_email
         - firstname
         - lastname
-        - total_sessions_to_date
+        - user_ltv
+        - attribution_sources
+        - campaign
+        - first_touch_score
+        - last_touch_score
+        - linear_attr_score
+        - markov_attr_score
 var_groups:
   - name: user_vars
     entity_key: user
@@ -55,7 +58,7 @@ var_groups:
           select: round(right(random(), 1)/10)
           description: Has the user completed a vikipass trial?
       - entity_var:
-          name: ltv
+          name: user_ltv
           from: inputs/rsIdentifies
           select: first_value(ltv ignore nulls)
           window:
@@ -115,3 +118,43 @@ var_groups:
           from: inputs/rsIdentifies
           select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
           description: Attribution source in chronological order
+      - entity_var:
+          name: marketing_campaign
+          from: inputs/rsIdentifies
+          select: first_value(campaign ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Campaign that the user was a part of
+      - entity_var:
+          name: first_touch_score
+          from: inputs/rsIdentifies
+          select: first_value(first_touch ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Campaign that the user was a part of
+      - entity_var:
+          name: last_touch_score
+          from: inputs/rsIdentifies
+          select: first_value(last_touch ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Campaign that the user was a part of
+      - entity_var:
+          name: linear_attr_score
+          from: inputs/rsIdentifies
+          select: first_value(linear_score ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Campaign that the user was a part of
+      - entity_var:
+          name: markov_attr_score
+          from: inputs/rsIdentifies
+          select: first_value(markov_score ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Campaign that the user was a part of
