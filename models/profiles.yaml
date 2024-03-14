@@ -15,10 +15,7 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
-        - titles_watched
-        - total_episodes_watched
-        - total_movies_rented
-        - vikipass_trial_completed
+        - orders_completed
         - total_sessions_to_date
         - most_recent_email
         - firstname
@@ -37,28 +34,10 @@ var_groups:
     entity_key: user
     vars:
       - entity_var:
-          name: titles_watched
-          from: inputs/rsIdentifies
-          select: array_agg(distinct content_watched)
-          description: All unique shows viewed
-      - entity_var:
-          name: total_episodes_watched
+          name: orders_completed
           from: inputs/rsIdentifies
           select: sum(number::real)
-          description: Number of episodes watched in total
-      - entity_var:
-          name: total_movies_rented
-          from: inputs/rsIdentifies
-          select: first_value(movies_rented ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Number of movies rented
-      - entity_var:
-          name: vikipass_trial_completed
-          from: inputs/rsIdentifies
-          select: round(right(random(), 1)/10)
-          description: Has the user completed a vikipass trial?
+          description: Number of orders_completed watched in total
       - entity_var:
           name: user_ltv
           from: inputs/rsIdentifies
