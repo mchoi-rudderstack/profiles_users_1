@@ -24,7 +24,7 @@ models:
         - firstname
         - lastname
         - is_churned
-        - churn_propensity_score
+        - percentile_churn_score
         - user_ltv
         - attribution_sources
         - marketing_campaign
@@ -76,7 +76,7 @@ var_groups:
               - timestamp desc
           description: Current churn status of the user
       - entity_var:
-          name: churn_propensity_score
+          name: percentile_churn_score
           from: inputs/rsIdentifies
           select: first_value(propensity_to_churn ignore nulls)
           window:
