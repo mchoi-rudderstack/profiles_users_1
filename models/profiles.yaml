@@ -78,7 +78,7 @@ var_groups:
       - entity_var:
           name: percentile_churn_score
           from: inputs/rsIdentifies
-          select: first_value(propensity_to_churn ignore nulls)
+          select: first_value(percentile_churn ignore nulls)
           window:
             order_by:
               - timestamp desc
