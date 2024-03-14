@@ -42,7 +42,7 @@ var_groups:
       - entity_var:
           name: items_left_in_cart
           from: inputs/rsIdentifies
-          select: uniform(1, 3, random())
+          select: uniform(0, 3, random())
       - entity_var:
           name: user_ltv
           from: inputs/rsIdentifies
