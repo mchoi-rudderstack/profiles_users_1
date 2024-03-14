@@ -16,6 +16,7 @@ models:
       entity_key: user
       features:
         - orders_completed
+        - items_left_in_cart
         - total_sessions_to_date
         - most_recent_email
         - firstname
@@ -38,6 +39,10 @@ var_groups:
           from: inputs/rsIdentifies
           select: sum(number::real)
           description: Number of orders_completed watched in total
+      - entity_var:
+          name: items_left_in_cart
+          from: inputs/rsIdentifies
+          select: uniform(1, 3, random())
       - entity_var:
           name: user_ltv
           from: inputs/rsIdentifies
