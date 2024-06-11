@@ -1,7 +1,7 @@
 # Project name
 name: users
 # Project's yaml schema version
-schema_version: 53
+schema_version: 54
 # WH Connection Profile to use.
 connection: adhoc_wh
 # Whether to allow inputs having no timestamps,
@@ -20,6 +20,10 @@ entities:
       - user_id
       - anonymous_id
       - email
+    feature_views: # These are additional views created to deliver the feature table by these identifiers (useful for RETL activation)
+      using_ids:
+        - id: email
+          name: customer_profiles_by_email
 id_types:
   - name: user_id
   - name: session_id
