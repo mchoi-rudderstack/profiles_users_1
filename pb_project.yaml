@@ -16,7 +16,7 @@ entities:
     id_stitcher: models/users_stitcher
     id_types:
       - user_id
-      # - anonymous_id
+      - anonymous_id
       - email
     feature_views: # These are additional views created to deliver the feature table by these identifiers (useful for RETL activation)
       using_ids:
@@ -25,14 +25,14 @@ entities:
 id_types:
   - name: user_id
   - name: session_id
-  # - name: anonymous_id
-  #   filters:
-  #     - type: exclude
-  #       value: ""
-  #     - type: exclude
-  #       value: "unknown"
-  #     - type: exclude
-  #       value: "NaN"
+  - name: anonymous_id
+    filters:
+      - type: exclude
+        value: ""
+      - type: exclude
+        value: "unknown"
+      - type: exclude
+        value: "NaN"
   - name: email
     filters:
       - type: include
