@@ -34,6 +34,10 @@ var_groups:
           window:
             order_by:
               - timestamp desc
+      - entity_var:
+          name: items_left_in_cart
+          from: inputs/rsIdentifies
+          select: uniform(1, 8, random())
   - name: user_vars
     entity_key: user
     vars:
@@ -41,11 +45,12 @@ var_groups:
           name: orders_completed
           from: inputs/rsIdentifies
           select: sum(number::real)
-          description: Number of orders_completed watched in total
+          description: Number of lifetime orders
       - entity_var:
           name: items_left_in_cart
           from: inputs/rsIdentifies
-          select: uniform(0, 3, random())
+          select: uniform(0, 8, random())
+          description: Number of items still in cart after  30 mins of inactivity
       - entity_var:
           name: user_ltv
           from: inputs/rsIdentifies
@@ -63,13 +68,13 @@ var_groups:
               - timestamp desc
           description: Current churn status of the user
       - entity_var:
-          name: percentile_churn_score
+          name: propensity_to_create_flybuys_account
           from: inputs/rsIdentifies
           select: first_value(percentile_churn ignore nulls)
           window:
             order_by:
               - timestamp desc
-          description: The churn propensity score 
+          description: The likelihood of a user creating a flybuys account
       - entity_var:
           name: total_sessions_to_date
           from: inputs/rsIdentifies
@@ -82,7 +87,7 @@ var_groups:
           window:
             order_by:
               - timestamp desc
-          where: first_name is not null and first_name!=''
+          where: first_name is not null and first_name != ''
           description: First name of the customer
       - entity_var:
           name: lastname
@@ -91,7 +96,7 @@ var_groups:
           window:
             order_by:
               - timestamp desc
-          where: last_name is not null and last_name!=''
+          where: last_name is not null and last_name != ''
           description: Last name of the customer
       - entity_var:
           name: most_recent_email
@@ -100,7 +105,7 @@ var_groups:
           window:
             order_by:
               - timestamp desc
-          where: email is not null and email!=''
+          where: email is not null and email != ''
           description: Email associated to the order
       - entity_var:
           name: attribution_sources
@@ -111,38 +116,6 @@ var_groups:
           name: marketing_campaign
           from: inputs/rsIdentifies
           select: first_value(campaign ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Campaign that the user was a part of
-      - entity_var:
-          name: first_touch_score
-          from: inputs/rsIdentifies
-          select: first_value(first_touch ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Campaign that the user was a part of
-      - entity_var:
-          name: last_touch_score
-          from: inputs/rsIdentifies
-          select: first_value(last_touch ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Campaign that the user was a part of
-      - entity_var:
-          name: linear_attr_score
-          from: inputs/rsIdentifies
-          select: first_value(linear_score ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          description: Campaign that the user was a part of
-      - entity_var:
-          name: markov_attr_score
-          from: inputs/rsIdentifies
-          select: first_value(markov_score ignore nulls)
           window:
             order_by:
               - timestamp desc
