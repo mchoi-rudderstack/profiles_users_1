@@ -8,7 +8,6 @@ models:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
         - from: inputs/rsPages
-
   - name: items_left_in_cart
     model_type: entity_cohort
     model_spec:
@@ -23,6 +22,7 @@ models:
         using_ids:
           - id: email
             name: cohort_test_by_email
+            
 var_groups:
   - name: items_left_in_cart_vars
     entity_cohort: models/items_left_in_cart
