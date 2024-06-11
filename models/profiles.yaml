@@ -31,7 +31,6 @@ var_groups:
           name: first_name_cohort
           from: inputs/rsIdentifies
           select: first_value(first_name ignore nulls)
-          where: first_name != ""
           window:
             order_by:
               - timestamp desc
