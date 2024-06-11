@@ -28,9 +28,9 @@ var_groups:
     entity_cohort: models/items_left_in_cart
     vars:
       - entity_var:
-          name: first_name_cohort
+          name: most_recent_email
           from: inputs/rsIdentifies
-          select: first_value(first_name ignore nulls)
+          select: first_value(email)
           window:
             order_by:
               - timestamp desc
