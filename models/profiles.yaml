@@ -21,7 +21,21 @@ models:
         name: items_left_in_cart_view
         using_ids:
           - id: email
-            name: cohort_test_by_email
+            name: items_left_in_cart_by_email
+  - name: high_propensity_to_create_flybuys_account
+    model_type: entity_cohort
+    model_spec:
+      extends: user/all
+      materialization:
+        output_type: table
+      filter_pipeline:
+        - type: include
+          value: "{{ user.Var('propensity_to_create_flybuys_account') }} >= 50"
+      feature_views:
+        name: high_propensity_to_create_flybuys_account_view
+        using_ids:
+          - id: email
+            name: high_propensity_to_create_flybuys_account_by_email
             
 var_groups:
   - name: items_left_in_cart_vars
@@ -35,9 +49,66 @@ var_groups:
             order_by:
               - timestamp desc
       - entity_var:
+          name: firstname
+          from: inputs/rsIdentifies
+          select: first_value(first_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          where: first_name is not null and first_name != ''
+          description: First name of the customer
+      - entity_var:
+          name: lastname
+          from: inputs/rsIdentifies
+          select: first_value(last_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          where: last_name is not null and last_name != ''
+      - entity_var:
           name: number_items_left_in_cart
           from: inputs/rsIdentifies
           select: uniform(1, 8, random())
+  - name: high_propensity_to_create_flybuys_account_vars
+    entity_cohort: models/high_propensity_to_create_flybuys_account
+    vars:
+      - entity_var:
+          name: most_recent_email_address
+          from: inputs/rsIdentifies
+          select: first_value(email)
+          window:
+            order_by:
+              - timestamp desc
+      - entity_var:
+          name: firstname
+          from: inputs/rsIdentifies
+          select: first_value(first_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          where: first_name is not null and first_name != ''
+          description: First name of the customer
+      - entity_var:
+          name: lastname
+          from: inputs/rsIdentifies
+          select: first_value(last_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          where: last_name is not null and last_name != ''
+      - entity_var:
+          name: orders_completed
+          from: inputs/rsIdentifies
+          select: sum(number::real)
+          description: Number of lifetime orders
+      - entity_var:
+          name: propensity_to_create_flybuys_account
+          from: inputs/rsIdentifies
+          select: first_value(propensity_to_create_flybuys_account ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: The likelihood of a user creating a flybuys account
   - name: user_vars
     entity_key: user
     vars:
@@ -70,7 +141,7 @@ var_groups:
       - entity_var:
           name: propensity_to_create_flybuys_account
           from: inputs/rsIdentifies
-          select: first_value(percentile_churn ignore nulls)
+          select: first_value(propensity_to_create_flybuys_account ignore nulls)
           window:
             order_by:
               - timestamp desc
