@@ -39,9 +39,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
+        # - select: "anonymous_id"
+        #   type: anonymous_id
+        #   entity: user
   - name: rsPages
     source_metadata:
       role: shopify
