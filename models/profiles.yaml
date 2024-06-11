@@ -8,29 +8,33 @@ models:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
         - from: inputs/rsPages
-  # Remove the section below, if you don't want to generate a feature table
-  - name: users
-    model_type: feature_table_model
+
+  - name: items_left_in_cart
+    model_type: entity_cohort
     model_spec:
-      validity_time: 24h # 1 day
-      entity_key: user
-      features:
-        - orders_completed
-        - items_left_in_cart
-        - total_sessions_to_date
-        - most_recent_email
-        - firstname
-        - lastname
-        - is_churned
-        - percentile_churn_score
-        - user_ltv
-        - attribution_sources
-        - marketing_campaign
-        - first_touch_score
-        - last_touch_score
-        - linear_attr_score
-        - markov_attr_score
+      extends: user/all
+      materialization:
+        output_type: table
+      filter_pipeline:
+        - type: include
+          value: "{{ user.Var('items_left_in_cart') }} >= 1"
+      feature_views:
+        name: items_left_in_cart_view
+        using_ids:
+          - id: email
+            name: cohort_test_by_email
 var_groups:
+  - name: items_left_in_cart_vars
+    entity_cohort: models/items_left_in_cart
+    vars:
+      - entity_var:
+          name: first_name_cohort
+          from: inputs/rsIdentifies
+          select: first_value(first_name ignore nulls)
+          # where: first_name is not null
+          # window:
+          #   order_by:
+          #     - timestamp desc
   - name: user_vars
     entity_key: user
     vars:
