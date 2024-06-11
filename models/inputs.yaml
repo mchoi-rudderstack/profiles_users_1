@@ -16,9 +16,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-        # - select: "anonymous_id"
-        #   type: anonymous_id
-        #   entity: user
+        - select: "anonymous_id"
+          type: anonymous_id
+          entity: user
         - select: "lower(email)"
           type: email
           entity: user
@@ -39,9 +39,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-        # - select: "anonymous_id"
-        #   type: anonymous_id
-        #   entity: user
+        - select: "anonymous_id"
+          type: anonymous_id
+          entity: user
   - name: rsPages
     source_metadata:
       role: shopify
@@ -59,9 +59,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-        # - select: "anonymous_id"
-        #   type: anonymous_id
-        #   entity: user
+        - select: "anonymous_id"
+          type: anonymous_id
+          entity: user
         - select: "concat(coalesce(anonymous_id, 'null'), coalesce(to_char(context_session_id), 'null'))"
           type: session_id
           entity: user
