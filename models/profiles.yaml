@@ -28,14 +28,14 @@ var_groups:
     entity_cohort: models/items_left_in_cart
     vars:
       - entity_var:
-          name: most_recent_email
+          name: most_recent_email_address
           from: inputs/rsIdentifies
           select: first_value(email)
           window:
             order_by:
               - timestamp desc
       - entity_var:
-          name: items_left_in_cart
+          name: number_items_left_in_cart
           from: inputs/rsIdentifies
           select: uniform(1, 8, random())
   - name: user_vars
