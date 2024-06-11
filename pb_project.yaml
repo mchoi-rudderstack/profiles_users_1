@@ -14,8 +14,6 @@ model_folders:
 entities:
   - name: user
     id_stitcher: models/users_stitcher
-    serve_traits:
-      - id_served: email
     id_types:
       - user_id
       - anonymous_id
