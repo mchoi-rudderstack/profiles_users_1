@@ -22,20 +22,6 @@ models:
         using_ids:
           - id: email
             name: items_left_in_cart_by_email
-  - name: high_propensity_to_create_flybuys_account
-    model_type: entity_cohort
-    model_spec:
-      extends: user/all
-      materialization:
-        output_type: table
-      filter_pipeline:
-        - type: include
-          value: "{{ user.Var('propensity_to_create_flybuys_account') }} >= 50"
-      feature_views:
-        name: high_propensity_to_create_flybuys_account_view
-        using_ids:
-          - id: email
-            name: high_propensity_to_create_flybuys_account_by_email
             
 var_groups:
   - name: items_left_in_cart_vars
@@ -69,38 +55,19 @@ var_groups:
           name: number_items_left_in_cart
           from: inputs/rsIdentifies
           select: uniform(1, 8, random())
-  - name: high_propensity_to_create_flybuys_account_vars
-    entity_cohort: models/high_propensity_to_create_flybuys_account
-    vars:
-      - entity_var:
-          name: recent_email_address
-          from: inputs/rsIdentifies
-          select: first_value(email)
-          window:
-            order_by:
-              - timestamp desc
-      - entity_var:
-          name: f_name
-          from: inputs/rsIdentifies
-          select: first_value(first_name ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          where: first_name is not null and first_name != ''
-          description: First name of the customer
-      - entity_var:
-          name: l_name
-          from: inputs/rsIdentifies
-          select: first_value(last_name ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-          where: last_name is not null and last_name != ''
       - entity_var:
           name: number_orders_completed
           from: inputs/rsIdentifies
           select: sum(number::real)
           description: Number of lifetime orders
+      - entity_var:
+          name: ltv
+          from: inputs/rsIdentifies
+          select: first_value(ltv ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: User LTV
       - entity_var:
           name: propensity_to_start_flybuys_account
           from: inputs/rsIdentifies
@@ -109,6 +76,20 @@ var_groups:
             order_by:
               - timestamp desc
           description: The likelihood of a user creating a flybuys account
+      - entity_var:
+          name: attribution_data_sources
+          from: inputs/rsIdentifies
+          select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
+          description: Attribution source in chronological order
+      - entity_var:
+          name: marketing_campaigns
+          from: inputs/rsIdentifies
+          select: first_value(campaign ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Campaign that the user was a part of
+
   - name: user_vars
     entity_key: user
     vars:
